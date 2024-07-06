@@ -66,7 +66,8 @@ async userrejectLeavesCount(@Param('userId', ParseIntPipe) userId: number,
   return this.leaverequestService.userrejectLeavesCount(userId)
 }
 
-//request Leave by User  
+//request Leave by User
+@Role('User')  
   @Post('/addleave/:userId')
   async create(@Body() leaverequestDto: CreateLeaverequestDto): Promise<any> {
     try {
