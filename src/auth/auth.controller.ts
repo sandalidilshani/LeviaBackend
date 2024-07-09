@@ -1,16 +1,33 @@
 // src/auth/auth.controller.ts
 
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { userSignInDto } from './dto/user-signin.dto';
 import { Public } from 'src/utility/common/public.decorator';
 import { LocalAuthGuard } from './guard/local-auth.guard';
+import { authConstants } from './auth.constant';
 import { CreatePlazeruserDto } from 'src/plazeruser/dto/create-plazeruser.dto';
+import { JwtService } from '@nestjs/jwt';
+import { PlazeruserService } from 'src/plazeruser/plazeruser.service';
+import { UpdatePlazeruserDto } from 'src/plazeruser/dto/update-plazeruser.dto';
+import { Plazeruser } from 'src/plazeruser/entities/plazeruser.entity';
 @Public()
 @Controller('auth')
 export class AuthController {
   constructor(
     private authservice: AuthService,
+    private jwtService: JwtService,
+    private plazerservise: PlazeruserService,
   ) {}
 
   @Post('/login')
@@ -19,9 +36,44 @@ export class AuthController {
     return this.authservice.signIn(userSignInDto);
   }
   @Post('/register')
-  async register(@Body() createPlazeruserDto: CreatePlazeruserDto): Promise<any> {
+  async register(
+    @Body() createPlazeruserDto: CreatePlazeruserDto,
+  ): Promise<any> {
     console.log('Hit /register route with', createPlazeruserDto);
 
     return this.authservice.register(createPlazeruserDto);
+  }
+
+  @Put('/update/:userId')
+  async update(
+    @Param('userId') userId: number,
+    @Body() updatePlazeruserDto: UpdatePlazeruserDto,
+  ): Promise<any> {
+    return this.plazerservise.update(updatePlazeruserDto, userId);
+  }
+
+  @Get('callback')
+  async handleCallback(@Query('token') token: string) {
+
+    try {
+      console.log(token);
+      const decoded = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET, // Ensure this matches the main app's secret
+      });
+      console.log(decoded);
+      const { sub, username, ...rest } = decoded;
+      const user = {
+        id: sub,
+        username,
+        ...rest,
+      };
+
+      // Save or update user data in mini app's database
+      await this.plazerservise.findorcreateUser(decoded)
+ 
+      return { message: 'User authenticated and data saved' };
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
   }
 }

@@ -1,17 +1,18 @@
 /* eslint-disable prettier/prettier */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePlazeruserDto } from './dto/create-plazeruser.dto';
-import {} from './dto/update-plazeruser.dto';
+import { UpdatePlazeruserDto } from './dto/update-plazeruser.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Plazeruser } from './entities/plazeruser.entity';
 import { Repository } from 'typeorm';
+import { log } from 'console';
 @Injectable()
 export class PlazeruserService {
   constructor(
     @InjectRepository(Plazeruser)
     private plazeuserRepositary: Repository<Plazeruser>,
-  ) {}
+  ) { }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async create(PlazeruserDto: CreatePlazeruserDto): Promise<Plazeruser> {
@@ -35,10 +36,10 @@ export class PlazeruserService {
   //find user by userId
   async findOneByUserId(userId: number): Promise<Plazeruser | null> {
     const user = await this.plazeuserRepositary.findOne({ where: { userId } });
-    
+
     return user;
   }
-  
+
 
   remove(id: number) {
     // return await this.plazeuserRepositary.;
@@ -106,5 +107,70 @@ export class PlazeruserService {
     }
   }
 
-  
+  async update(updatePlazeruserDto: UpdatePlazeruserDto, userId: number): Promise<any> {
+    const user = await this.plazeuserRepositary.findOne({
+      where: { userId: userId },
+    });
+
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+    console.log(user)
+    console.log(updatePlazeruserDto)
+    // Merging the new data with the existing user data
+    const updatedUser = this.plazeuserRepositary.merge(user, updatePlazeruserDto);
+
+    // Saving the updated user
+    await this.plazeuserRepositary.save(updatedUser);
+
+
+    return updatedUser;
+  }
+
+  async findorcreateUser(userPayload:Partial<Plazeruser>):Promise<Plazeruser>{
+    let user=await this.plazeuserRepositary.findOne({where:{userId:userPayload.userId}})
+    console.log(user)
+    if(!user){
+      const createPlazeruserDto: CreatePlazeruserDto = {
+        userName: userPayload.userName,
+        userFName: userPayload.userFName,
+        userLName: userPayload.userLName,
+        AddressL1: userPayload.AddressL1,
+        AddressL2: userPayload.AddressL2,
+        AddressL3: userPayload.AddressL3,
+        Email: userPayload.Email,
+        gender: userPayload.gender,
+        skills: userPayload.skills,
+        DoB: new Date (userPayload.DoB),
+        phone: userPayload.phone,
+        role: userPayload.role,
+        image: userPayload.image,
+        gitlink: userPayload.gitlink,
+      };    
+      const user= this.plazeuserRepositary.create(createPlazeruserDto)
+    }
+    else{
+      user.userName = userPayload.userName;
+      user.userPassword = userPayload.userPassword;
+      user.userFName = userPayload.userFName;
+      user.userLName = userPayload.userLName;
+      user.AddressL1 = userPayload.AddressL1;
+      user.AddressL2 = userPayload.AddressL2;
+      user.AddressL3 = userPayload.AddressL3;
+      user.Email = userPayload.Email;
+      user.gender = userPayload.gender;
+      user.skills = userPayload.skills;
+      user.DoB = userPayload.DoB;
+      user.phone = userPayload.phone;
+      user.role = userPayload.role;
+      user.image = userPayload.image;
+      user.gitlink = userPayload.gitlink;
+      await this.plazeuserRepositary.update(user.userId, user);
+
+    }
+    return user;
+
+  }
+
 }

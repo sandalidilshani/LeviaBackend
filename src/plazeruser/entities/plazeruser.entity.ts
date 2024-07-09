@@ -19,7 +19,7 @@ export class Plazeruser {
   @Column({ unique: true, nullable: false })
   userName: string;
 
-  @Column({ nullable: false, select: true  })
+  @Column({ nullable: true, select: true  })
   userPassword: string;
 
   @Column({ nullable: false, name: 'FirstName' })
