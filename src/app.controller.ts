@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { GetCurrentUserByUsername } from './utility/middleware';
 import { Role } from './utility/guard/role.decorator';
 import { RoleGuard } from './utility/guard/role.guard';
+import { Public } from './utility/common/public.decorators';
+@Public()
 @Controller()
 export class AppController {
   constructor(
@@ -14,8 +16,8 @@ export class AppController {
 
 
 @Get()
-getHello(@GetCurrentUserByUsername() username:string):string{
-  console.log(username)
+getHello( ){
+  console.log('hi')
   return this.appservice.getHello()
 }
 

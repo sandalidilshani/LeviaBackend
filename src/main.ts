@@ -12,6 +12,6 @@ async function bootstrap() {
     }
   ))
   app.enableCors();
-  await app.listen(process.env.NEON_DB_PORT);
+  await app.listen(3009);
 }
 bootstrap();
