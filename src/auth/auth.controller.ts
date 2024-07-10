@@ -54,7 +54,6 @@ export class AuthController {
   async handleCallback(@Query('token') token: string) {
     console.log('token', token);
     try {
-      console.log(token);
       const decoded = this.jwtService.verify(token, {
         secret: authConstants.secret, // Ensure this matches the main app's secret
       });
