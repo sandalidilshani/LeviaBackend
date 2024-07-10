@@ -16,7 +16,7 @@ export class LeavetypeService {
 
 
   async create(createLeavetypeDto: CreateLeavetypeDto): Promise<Leavetype> {
-    const { type } = createLeavetypeDto;
+    const { type,description } = createLeavetypeDto;
 
     // Check if a record with the same 'type' already exists
     const existingRecord = await this.leavetypeRepository.findOne({ where: { type } });
@@ -29,6 +29,7 @@ export class LeavetypeService {
 
     const newLeavetype = new Leavetype();
     newLeavetype.type = type;
+    newLeavetype.description=description
     return await this.leavetypeRepository.save(newLeavetype);
   }
 
