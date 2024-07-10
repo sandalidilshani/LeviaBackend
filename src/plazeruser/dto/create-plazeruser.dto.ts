@@ -9,7 +9,6 @@ enum Gender {
 
 enum Role {
   Member = 'Member',
-  OrganizationAdmin = 'Organization Admin',
   HRManager = 'HRManager',
 }
 

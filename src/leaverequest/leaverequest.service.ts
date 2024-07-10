@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateLeaverequestDto } from './dto/create-leaverequest.dto';
 import { UpdateLeaverequestDto } from './dto/update-leaverequest.dto';
 import { LeaveRequest } from './entities/leaverequest.entity';
@@ -301,61 +301,58 @@ export class LeaverequestService {
         where: { leaveId },
         relations: ['userId'],
       });
-  
+
       if (!leaveRequest) {
-        throw new Error('Leave request not found');
+        throw new HttpException('Leave request not found', HttpStatus.NOT_FOUND);
       }
-  
+
       const updateData: Partial<LeaveRequest> = {
         leavestatus: updateleaverequeststatus.newStatus,
       };
-  
+
       // If the new status is APPROVED, update approveDate and user's leave count
       if (updateleaverequeststatus.newStatus === leaveStatus.APPROVE) {
         updateData.approveDate = new Date();
-  
+
         // Calculate leave days
         const leaveDays = this.calculateLeaveDays(leaveRequest.leaveStart, leaveRequest.leaveEnd);
-        
-  
+
         // Fetch and update user's leave record
         const userLeave = await this.userleaveRepo.findOne({
           where: { plazeruser: { userId: leaveRequest.userId.userId } },
         });
-  
+
         if (!userLeave) {
-          throw new Error('User leave record not found');
+          throw new HttpException('User leave record not found', HttpStatus.NOT_FOUND);
         }
-  
+
         if (userLeave.availableLeaves < leaveDays) {
-          throw new Error('Not enough available leaves');
+          throw new HttpException('Not enough available leaves', HttpStatus.BAD_REQUEST);
         }
-  
+
         userLeave.availableLeaves -= leaveDays;
         await this.userleaveRepo.save(userLeave);
       }
-  
+
       // Update the leave request
       const result = await this.leaverequestRepository.update(leaveId, updateData);
-  
+
       if (result.affected === 0) {
-        throw new Error('Update failed: leave ID not found');
+        throw new HttpException('Update failed: leave ID not found', HttpStatus.NOT_FOUND);
       }
-  
+
       return result;
     } catch (error) {
       console.error('Error in updateleaveStatus:', error);
-      throw error; // Re-throw the error to be handled by the caller
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  
-  private calculateLeaveDays(startDate: Date, endDate: Date): number {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const daysDiff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    return daysDiff;
-  }
 
+  private calculateLeaveDays(startDate: Date, endDate: Date): number {
+    const oneDay = 24 * 60 * 60 * 1000;
+    const diffDays = Math.round(Math.abs((endDate.getTime() - startDate.getTime()) / oneDay));
+    return diffDays;
+  }
   //get leave requests by leave type
   async getLeaveDetailsByleaveTypeid(
     leaveType: number,
