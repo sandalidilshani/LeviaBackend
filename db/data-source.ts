@@ -18,12 +18,7 @@ export const dataSourceOptions:DataSourceOptions={
     entities: [Plazeruser,LeaveRequest,Leavetype,UserLeave],
     subscribers: [],
     migrations: [],
-    extra: {
-        ssl: {
-          rejectUnauthorized: true
-        }
-    
-    }}
+  }
 const dataSource=new DataSource(dataSourceOptions)
 
 export default dataSource;
