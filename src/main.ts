@@ -15,7 +15,10 @@ async function bootstrap() {
     {
       origin:'https://leviaapp-536f0.web.app/',
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-      credentials:true
+      credentials:true,
+      allowedHeaders:'Content-Type,Authorization',
+      exposedHeaders:'Authorization',
+      maxAge:3600
     }
   );
   app.useGlobalPipes(new ValidationPipe())
