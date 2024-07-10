@@ -13,12 +13,11 @@ async function bootstrap() {
   ))
   app.enableCors(
     {
-      origin:'https://leviaapp-536f0.web.app',
+      origin:'*',
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials:true,
-      allowedHeaders:'Content-Type,Authorization',
+      allowedHeaders:'*',
       exposedHeaders:'Authorization',
-      maxAge:3600
     }
   );
   app.useGlobalPipes(new ValidationPipe())
