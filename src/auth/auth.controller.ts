@@ -54,11 +54,11 @@ export class AuthController {
 
   @Get('callback')
   async handleCallback(@Query('token') token: string) {
-
+console.log('token',token)
     try {
       console.log(token);
       const decoded = this.jwtService.verify(token, {
-        secret: process.env.JWT_SECRET, // Ensure this matches the main app's secret
+        secret: authConstants.secret, // Ensure this matches the main app's secret
       });
       console.log(decoded);
       const { sub, username, ...rest } = decoded;
@@ -73,7 +73,7 @@ export class AuthController {
  
       return { message: 'User authenticated and data saved' };
     } catch (err) {
-      throw new UnauthorizedException();
+      console.log(err);
     }
   }
 }
