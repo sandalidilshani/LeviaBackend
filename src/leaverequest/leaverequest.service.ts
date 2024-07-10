@@ -24,7 +24,7 @@ export class LeaverequestService {
     private plazeruserRepo: Repository<Plazeruser>,
 
     @InjectRepository(UserLeave)
-    private userleaveRepo:Repository<UserLeave>
+    private userleaveRepo: Repository<UserLeave>
   ) { }
 
 
@@ -102,7 +102,7 @@ export class LeaverequestService {
   async getLeaveDetailsById(leaveId: number) {
     return await this.leaverequestRepository.findOne({
       where: { leaveId },
-      relations: ['leaveTypeid','userId']
+      relations: ['leaveTypeid', 'userId']
     });
   }
 
@@ -163,13 +163,12 @@ export class LeaverequestService {
     const leaverequest = new LeaveRequest();
     leaverequest.leaveStart = new Date(createLeaverequestDto.leaveStart);
     leaverequest.leaveEnd = new Date(createLeaverequestDto.leaveEnd);
-//check available laeves
+    //check available leaves
     const leaveDays = this.calculateLeaveDays(leaverequest.leaveStart, leaverequest.leaveEnd);
-  
-    const userLeave = await this.userleaveRepo.findOne({
-      where: { plazeruser: { userId: leaverequest.userId.userId } },
-    });
 
+    const userLeave = await this.userleaveRepo.findOne({
+      where: { plazeruser: { userId: createLeaverequestDto.userId } },
+    });
     if (!userLeave) {
       throw new Error('User leave record not found');
     }
@@ -177,10 +176,10 @@ export class LeaverequestService {
     if (userLeave.availableLeaves < leaveDays) {
       throw new Error('Not enough available leaves');
     }
-    if(userLeave.leavesValidUntil>leaverequest.leaveStart && userLeave.leavesValidUntil>leaverequest.leaveEnd){
+    if (userLeave.leavesValidUntil > leaverequest.leaveStart && userLeave.leavesValidUntil > leaverequest.leaveEnd) {
       throw new Error('your request period is Not Valid')
     }
-    
+
     leaverequest.leaveReason = createLeaverequestDto.leaveReason;
     leaverequest.requestDate = createLeaverequestDto.requestDate;
     const leavetype = await this.leavetypeRepo.findOneById(
@@ -198,12 +197,12 @@ export class LeaverequestService {
     } catch (err) {
       console.log(error);
     }
-     async function calculateLeaveDays(startDate: Date, endDate: Date): Promise<number> {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const daysDiff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    return daysDiff;
-  }
+    async function calculateLeaveDays(startDate: Date, endDate: Date): Promise<number> {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const daysDiff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      return daysDiff;
+    }
   }
 
   //get user pending leaves by user id
@@ -211,7 +210,7 @@ export class LeaverequestService {
     try {
       const pendingRequests = await this.leaverequestRepository
         .createQueryBuilder('leaverequest')
-        .innerJoinAndSelect('leaverequest.leaveTypeid','Leavetype')
+        .innerJoinAndSelect('leaverequest.leaveTypeid', 'Leavetype')
         .where('leaverequest.userId = :userId', { userId })
         .andWhere('leaverequest.leavestatus = :status', { status: 'pending' })
         .select([
@@ -233,61 +232,61 @@ export class LeaverequestService {
       return null;
     }
   }
-  
+
   //get user approve leaves by user id
   async getApproveRequestsbyUser(userId: number) {
     try {
       const pendingRequests = await this.leaverequestRepository
-      .createQueryBuilder('leaverequest')
-      .innerJoinAndSelect('leaverequest.leaveTypeid','Leavetype')
-      .where('leaverequest.userId = :userId', { userId })
-      .andWhere('leaverequest.leavestatus = :status', { status: 'approve' })
-      .select([
-        'leaverequest.leaveId',
-        'leaverequest.leaveStart',
-        'leaverequest.leaveEnd',
-        'leaverequest.leaveReason',
-        'leaverequest.requestDate',
-        'Leavetype'
-      ])
-      .getMany();
+        .createQueryBuilder('leaverequest')
+        .innerJoinAndSelect('leaverequest.leaveTypeid', 'Leavetype')
+        .where('leaverequest.userId = :userId', { userId })
+        .andWhere('leaverequest.leavestatus = :status', { status: 'approve' })
+        .select([
+          'leaverequest.leaveId',
+          'leaverequest.leaveStart',
+          'leaverequest.leaveEnd',
+          'leaverequest.leaveReason',
+          'leaverequest.requestDate',
+          'Leavetype'
+        ])
+        .getMany();
 
-    if (pendingRequests.length === 0) {
-      return 'No Pending request';
+      if (pendingRequests.length === 0) {
+        return 'No Pending request';
+      }
+      return pendingRequests;
+    } catch (error) {
+      console.error('Error in getPendingRequests:', error);
+      return null;
     }
-    return pendingRequests;
-  } catch (error) {
-    console.error('Error in getPendingRequests:', error);
-    return null;
-  }
   }
 
   //get user reject leaves by user id
   async getRejectRequestsbyUser(userId: number) {
     try {
       const pendingRequests = await this.leaverequestRepository
-      .createQueryBuilder('leaverequest')
-      .innerJoinAndSelect('leaverequest.leaveTypeid','Leavetype')
-      .where('leaverequest.userId = :userId', { userId })
-      .andWhere('leaverequest.leavestatus = :status', { status: 'reject' })
-      .select([
-        'leaverequest.leaveId',
-        'leaverequest.leaveStart',
-        'leaverequest.leaveEnd',
-        'leaverequest.leaveReason',
-        'leaverequest.requestDate',
-        'Leavetype'
-      ])
-      .getMany();
+        .createQueryBuilder('leaverequest')
+        .innerJoinAndSelect('leaverequest.leaveTypeid', 'Leavetype')
+        .where('leaverequest.userId = :userId', { userId })
+        .andWhere('leaverequest.leavestatus = :status', { status: 'reject' })
+        .select([
+          'leaverequest.leaveId',
+          'leaverequest.leaveStart',
+          'leaverequest.leaveEnd',
+          'leaverequest.leaveReason',
+          'leaverequest.requestDate',
+          'Leavetype'
+        ])
+        .getMany();
 
-    if (pendingRequests.length === 0) {
-      return 'No Pending request';
+      if (pendingRequests.length === 0) {
+        return 'No Pending request';
+      }
+      return pendingRequests;
+    } catch (error) {
+      console.error('Error in getPendingRequests:', error);
+      return null;
     }
-    return pendingRequests;
-  } catch (error) {
-    console.error('Error in getPendingRequests:', error);
-    return null;
-  }
   }
 
   //update Leave request status by HR

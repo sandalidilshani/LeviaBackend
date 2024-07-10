@@ -16,7 +16,7 @@ import { UpdateLeaverequestDto } from './dto/update-leaverequest.dto';
 import { LeaveRequest } from './entities/leaverequest.entity';
 import { leaveStatus } from 'src/utility/common/leaverequest..leavestatus.enum';
 import { UpdateLeaveRequestStatusDto } from './dto/update-leaveStatus.dto';
-import { Role} from 'src/utility/guard/role.decorator';
+import { Role } from 'src/utility/guard/role.decorator';
 @Controller('leaverequest')
 export class LeaverequestController {
   constructor(private readonly leaverequestService: LeaverequestService) { }
@@ -27,8 +27,8 @@ export class LeaverequestController {
   async getPendingRequest() {
     return this.leaverequestService.getPendingRequests();
   }
-//get all Pending Leaves Count for HR
-@Role('HRManager')
+  //get all Pending Leaves Count for HR
+  @Role('HRManager')
   @Get('/pendingleavescount')
   async pendingLeavesCount(): Promise<any> {
     return this.leaverequestService.pendingLeavesCount();
@@ -47,30 +47,31 @@ export class LeaverequestController {
   }
 
   //Get Relevent User's  Leave Counts
-  @Role('HRManager','User')
-@Get('/userpendingleaves/:userId')
-async userpendingLeavesCount(@Param('userId', ParseIntPipe) userId: number,
-): Promise<number> {
-  return this.leaverequestService.userpendingLeavesCount(userId)
-}
-@Role('HRManager','User')
-@Get('/userapprovectleaves/:userId')
-async useracceptLeavesCount(@Param('userId', ParseIntPipe) userId: number,
-): Promise<number> {
-  return this.leaverequestService.userapproveLeavesCount(userId)
-}
-@Role('HRManager','User')
-@Get('/userrejectleaves/:userId')
-async userrejectLeavesCount(@Param('userId', ParseIntPipe) userId: number,
-): Promise<number> {
-  return this.leaverequestService.userrejectLeavesCount(userId)
-}
+  @Role('HRManager', 'User')
+  @Get('/userpendingleaves/:userId')
+  async userpendingLeavesCount(@Param('userId', ParseIntPipe) userId: number,
+  ): Promise<number> {
+    return this.leaverequestService.userpendingLeavesCount(userId)
+  }
+  @Role('HRManager', 'User')
+  @Get('/userapprovectleaves/:userId')
+  async useracceptLeavesCount(@Param('userId', ParseIntPipe) userId: number,
+  ): Promise<number> {
+    return this.leaverequestService.userapproveLeavesCount(userId)
+  }
+  @Role('HRManager', 'User')
+  @Get('/userrejectleaves/:userId')
+  async userrejectLeavesCount(@Param('userId', ParseIntPipe) userId: number,
+  ): Promise<number> {
+    return this.leaverequestService.userrejectLeavesCount(userId)
+  }
 
-//request Leave by User
-@Role('User')  
+  //request Leave by User
+  @Role('User')
   @Post('/addleave/:userId')
   async create(@Body() leaverequestDto: CreateLeaverequestDto): Promise<any> {
     try {
+      console.log(leaverequestDto)
       const leaverequest =
         await this.leaverequestService.create(leaverequestDto);
       return { success: true, data: leaverequest };
@@ -116,9 +117,9 @@ async userrejectLeavesCount(@Param('userId', ParseIntPipe) userId: number,
   }
 
 
-  
-  
-@Role('HRManager')
+
+
+  @Role('HRManager')
   @Get(':leaveId')
   async getLeaveDetailsById(
     @Param('leaveId') leaveId: number,
@@ -126,7 +127,7 @@ async userrejectLeavesCount(@Param('userId', ParseIntPipe) userId: number,
     return this.leaverequestService.getLeaveDetailsById(leaveId);
   }
 
-  
+
 
   //get pending leave requests
   @Get('status/:leavestatus')
@@ -149,7 +150,7 @@ async userrejectLeavesCount(@Param('userId', ParseIntPipe) userId: number,
     return this.leaverequestService.getPendingRequestsbyUser(userid);
   }
 
- 
+
   @Put('leave/:leaveId')
   async update(
     @Param('leaveId', ParseIntPipe) leveId: number,
@@ -158,5 +159,5 @@ async userrejectLeavesCount(@Param('userId', ParseIntPipe) userId: number,
     return this.leaverequestService.update(leveId, updateleaverequest);
   }
 
-  
+
 }

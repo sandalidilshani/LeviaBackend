@@ -20,7 +20,7 @@ export class CreateLeaverequestDto {
 
   @IsNotEmpty()
   @IsNumber({},{each:true})
-  readonly userId: number;
+   userId: number;
 
   @IsNotEmpty()
   requestDate:Date;
