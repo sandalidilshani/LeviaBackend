@@ -296,7 +296,6 @@ export class LeaverequestService {
     updateleaverequeststatus: UpdateLeaveRequestStatusDto,
   ): Promise<UpdateResult> {
     try {
-      // Fetch the leave request with user details
       const leaveRequest = await this.leaverequestRepository.findOne({
         where: { leaveId },
         relations: ['userId'],
@@ -349,8 +348,10 @@ export class LeaverequestService {
   }
 
   private calculateLeaveDays(startDate: Date, endDate: Date): number {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
     const oneDay = 24 * 60 * 60 * 1000;
-    const diffDays = Math.round(Math.abs((endDate.getTime() - startDate.getTime()) / oneDay));
+    const diffDays = Math.round(Math.abs((end.getTime() - start.getTime()) / oneDay));
     return diffDays;
   }
   //get leave requests by leave type

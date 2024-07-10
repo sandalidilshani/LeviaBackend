@@ -5,6 +5,8 @@
         "Createuser",
         "createuserdto",
         "newuser",
-        "typeorm"
+        "typeorm",
+        "updateleave",
+        "userleave"
     ]
 }
