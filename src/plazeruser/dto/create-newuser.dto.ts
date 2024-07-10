@@ -15,10 +15,7 @@ enum Role {
 
 export class createuserdto {
   @IsString()
-  @IsNotEmpty({ message: 'Username cannot be empty' })
   userName: string;
-
-
 
   userPassword: string;
 

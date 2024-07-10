@@ -2,6 +2,7 @@
 
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePlazeruserDto } from './dto/create-plazeruser.dto';
+import { createuserdto } from './dto/create-newuser.dto';
 import { UpdatePlazeruserDto } from './dto/update-plazeruser.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Plazeruser } from './entities/plazeruser.entity';
@@ -19,7 +20,26 @@ export class PlazeruserService {
     const plazeuser = new Plazeruser();
     return await this.plazeuserRepositary.save(plazeuser);
   }
-
+  async createnewuser(createuserdto: createuserdto): Promise<Plazeruser> {
+    const user = new Plazeruser();
+    user.userName = createuserdto.userName;
+    user.userPassword = createuserdto.userPassword;
+    user.userFName = createuserdto.userFName;
+    user.userLName = createuserdto.userLName;
+    user.AddressL1 = createuserdto.AddressL1;
+    user.AddressL2 = createuserdto.AddressL2;
+    user.AddressL3 = createuserdto.AddressL3;
+    user.Email = createuserdto.Email;
+    user.gender = createuserdto.gender;
+    user.skills = createuserdto.skills;
+    user.DoB = new Date(createuserdto.DoB);
+    user.phone = createuserdto.phone;
+    user.role = createuserdto.role;
+    user.image = createuserdto.image;
+    user.gitlink = createuserdto.gitlink;
+    user.active = true;
+    return await this.plazeuserRepositary.save(user);
+  }
   //get all users
   findAll(): Promise<Plazeruser[]> {
     return this.plazeuserRepositary.find();
@@ -128,10 +148,10 @@ export class PlazeruserService {
     return updatedUser;
   }
 
-  async findorcreateUser(userPayload:Partial<Plazeruser>):Promise<Plazeruser>{
-    let user=await this.plazeuserRepositary.findOne({where:{userId:userPayload.userId}})
+  async findorcreateUser(userPayload: Partial<Plazeruser>): Promise<Plazeruser> {
+    let user = await this.plazeuserRepositary.findOne({ where: { userId: userPayload.userId } })
     console.log(user)
-    if(!user){
+    if (!user) {
       const createPlazeruserDto: CreatePlazeruserDto = {
         userName: userPayload.userName,
         userFName: userPayload.userFName,
@@ -142,15 +162,15 @@ export class PlazeruserService {
         Email: userPayload.Email,
         gender: userPayload.gender,
         skills: userPayload.skills,
-        DoB: new Date (userPayload.DoB),
+        DoB: new Date(userPayload.DoB),
         phone: userPayload.phone,
         role: userPayload.role,
         image: userPayload.image,
         gitlink: userPayload.gitlink,
-      };    
-      const user= this.plazeuserRepositary.create(createPlazeruserDto)
+      };
+      const user = this.plazeuserRepositary.create(createPlazeruserDto)
     }
-    else{
+    else {
       user.userName = userPayload.userName;
       user.userPassword = userPayload.userPassword;
       user.userFName = userPayload.userFName;

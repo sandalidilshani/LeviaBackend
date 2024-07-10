@@ -11,9 +11,12 @@ export class AuthService {
   constructor(
     private plazeruserservice: PlazeruserService,
     private jwtservice: JwtService,
-  ) {}
+  ) { }
 
-  async validateUser(username: string, userpassword: string): Promise<Plazeruser | null> {
+  async validateUser(
+    username: string,
+    userpassword: string,
+  ): Promise<Plazeruser | null> {
     const user = await this.plazeruserservice.findUserByUserName(username);
     console.log('Validating user:', { username, userpassword });
     console.log('User after validation', user.userPassword);
@@ -25,26 +28,30 @@ export class AuthService {
 
   async signIn(userSignInDto: userSignInDto): Promise<any> {
     console.log('Signing in with', userSignInDto);
-    const user = await this.validateUser(userSignInDto.userName, userSignInDto.userpassword);
+    const user = await this.validateUser(
+      userSignInDto.userName,
+      userSignInDto.userpassword,
+    );
     console.log('User after validation', user);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const payload = { 
+    const payload = {
       sub: user.userId,
       username: user.userName,
       roles: [user.role],
-      email:user.Email,
-      addressL1:user.AddressL1,
-      addressL2:user.AddressL2,
-      addressL3:user.AddressL3,
-      skills:user.skills,
-      DoB:user.DoB,
-      gender:user.gender,
+      email: user.Email,
+      addressL1: user.AddressL1,
+      addressL2: user.AddressL2,
+      addressL3: user.AddressL3,
+      skills: user.skills,
+      DoB: user.DoB,
+      gender: user.gender,
       active: user.active,
-      image:user.image,
-      gitLink:user.gitlink,
-      phone:user.phone, };
+      image: user.image,
+      gitLink: user.gitlink,
+      phone: user.phone,
+    };
     const access_token = this.jwtservice.sign(payload);
     return { accesstoken: access_token };
   }
@@ -52,12 +59,13 @@ export class AuthService {
   async register(CreateuserDto: createuserdto): Promise<any> {
     console.log('Registering user with', CreateuserDto);
 
-    await this.plazeruserservice.create(CreateuserDto);
-    const user = await this.plazeruserservice.findUserByUserName(CreateuserDto.userName);
-    if (!user) {
-      throw new UnauthorizedException('User not found after registration');
+    const user = await this.plazeruserservice.findUserByUserName(
+      CreateuserDto.userName,
+    );
+    if (user) {
+      throw new UnauthorizedException('User found');
     }
-    return this.signIn({ 
-      userName: user.userName, userpassword: user.userPassword });
+    const newuser = this.plazeruserservice.createnewuser(CreateuserDto);
+    return newuser;
   }
 }

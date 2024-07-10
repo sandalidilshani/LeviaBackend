@@ -36,9 +36,7 @@ export class AuthController {
     return this.authservice.signIn(userSignInDto);
   }
   @Post('/register')
-  async register(
-    @Body() createnewuser: createuserdto,
-  ): Promise<any> {
+  async register(@Body() createnewuser: createuserdto): Promise<Plazeruser> {
     console.log('Hit /register route with', createnewuser);
 
     return this.authservice.register(createnewuser);
@@ -54,7 +52,7 @@ export class AuthController {
 
   @Get('callback')
   async handleCallback(@Query('token') token: string) {
-console.log('token',token)
+    console.log('token', token);
     try {
       console.log(token);
       const decoded = this.jwtService.verify(token, {
@@ -69,8 +67,8 @@ console.log('token',token)
       };
 
       // Save or update user data in mini app's database
-      await this.plazerservise.findorcreateUser(decoded)
- 
+      await this.plazerservise.findorcreateUser(decoded);
+
       return { message: 'User authenticated and data saved' };
     } catch (err) {
       console.log(err);
