@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { userSignInDto } from 'src/auth/dto/user-signin.dto';
-import { CreatePlazeruserDto } from 'src/plazeruser/dto/create-plazeruser.dto';
+import { createuserdto } from 'src/plazeruser/dto/create-newuser.dto';
 import { PlazeruserService } from 'src/plazeruser/plazeruser.service';
 import { Plazeruser } from 'src/plazeruser/entities/plazeruser.entity';
 import { Public } from 'src/utility/common/public.decorators';
@@ -49,11 +49,11 @@ export class AuthService {
     return { accesstoken: access_token };
   }
 
-  async register(createPlazeruserDto: CreatePlazeruserDto): Promise<any> {
-    console.log('Registering user with', createPlazeruserDto);
+  async register(CreateuserDto: createuserdto): Promise<any> {
+    console.log('Registering user with', CreateuserDto);
 
-    await this.plazeruserservice.create(createPlazeruserDto);
-    const user = await this.plazeruserservice.findUserByUserName(createPlazeruserDto.userName);
+    await this.plazeruserservice.create(CreateuserDto);
+    const user = await this.plazeruserservice.findUserByUserName(CreateuserDto.userName);
     if (!user) {
       throw new UnauthorizedException('User not found after registration');
     }

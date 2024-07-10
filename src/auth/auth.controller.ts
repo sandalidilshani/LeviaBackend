@@ -16,7 +16,7 @@ import { userSignInDto } from './dto/user-signin.dto';
 import { Public } from 'src/utility/common/public.decorator';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { authConstants } from './auth.constant';
-import { CreatePlazeruserDto } from 'src/plazeruser/dto/create-plazeruser.dto';
+import { createuserdto } from 'src/plazeruser/dto/create-newuser.dto';
 import { JwtService } from '@nestjs/jwt';
 import { PlazeruserService } from 'src/plazeruser/plazeruser.service';
 import { UpdatePlazeruserDto } from 'src/plazeruser/dto/update-plazeruser.dto';
@@ -37,11 +37,11 @@ export class AuthController {
   }
   @Post('/register')
   async register(
-    @Body() createPlazeruserDto: CreatePlazeruserDto,
+    @Body() createnewuser: createuserdto,
   ): Promise<any> {
-    console.log('Hit /register route with', createPlazeruserDto);
+    console.log('Hit /register route with', createnewuser);
 
-    return this.authservice.register(createPlazeruserDto);
+    return this.authservice.register(createnewuser);
   }
 
   @Put('/update/:userId')

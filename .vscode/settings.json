@@ -1,5 +1,9 @@
 {
     "cSpell.words": [
+        "authservice",
+        "createnewuser",
+        "Createuser",
+        "createuserdto",
         "typeorm"
     ]
 }
