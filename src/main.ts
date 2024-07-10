@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule,{cors:true});
+  const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe(
     {
       whitelist:true,
@@ -13,7 +13,7 @@ async function bootstrap() {
   ))
   app.enableCors(
     {
-      origin:'https://leviaapp-536f0.web.app/',
+      origin:'https://leviaapp-536f0.web.app',
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials:true,
       allowedHeaders:'Content-Type,Authorization',

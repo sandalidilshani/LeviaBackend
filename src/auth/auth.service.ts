@@ -30,7 +30,21 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const payload = { username: user.userName, sub: user.userId, role: user.role };
+    const payload = { 
+      sub: user.userId,
+      username: user.userName,
+      roles: [user.role],
+      email:user.Email,
+      addressL1:user.AddressL1,
+      addressL2:user.AddressL2,
+      addressL3:user.AddressL3,
+      skills:user.skills,
+      DoB:user.DoB,
+      gender:user.gender,
+      active: user.active,
+      image:user.image,
+      gitLink:user.gitlink,
+      phone:user.phone, };
     const access_token = this.jwtservice.sign(payload);
     return { accesstoken: access_token };
   }
@@ -43,6 +57,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('User not found after registration');
     }
-    return this.signIn({ userName: user.userName, userpassword: user.userPassword });
+    return this.signIn({ 
+      userName: user.userName, userpassword: user.userPassword });
   }
 }

@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PlazeruserService } from 'src/plazeruser/plazeruser.service';
+import { Role } from './role.decorator';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
@@ -11,6 +12,7 @@ export class RoleGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.get<string[]>('roles', context.getHandler());
+    
 
     if (!requiredRoles || requiredRoles.length === 0) {
       return true;
