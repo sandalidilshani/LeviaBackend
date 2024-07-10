@@ -4,6 +4,7 @@
         "createnewuser",
         "Createuser",
         "createuserdto",
+        "newuser",
         "typeorm"
     ]
 }

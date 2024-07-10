@@ -17,6 +17,8 @@ export class createuserdto {
   @IsString()
   userName: string;
 
+  @IsString()
+  @IsNotEmpty()
   userPassword: string;
 
   @IsString()
