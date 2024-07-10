@@ -11,7 +11,14 @@ async function bootstrap() {
       transform:true
     }
   ))
-  app.enableCors();
+  app.enableCors(
+    {
+      origin:'https://leviaapp-536f0.web.app/',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials:true
+    }
+  );
+  app.useGlobalPipes(new ValidationPipe())
   await app.listen(3009);
 }
 bootstrap();

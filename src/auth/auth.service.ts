@@ -5,7 +5,7 @@ import { CreatePlazeruserDto } from 'src/plazeruser/dto/create-plazeruser.dto';
 import { PlazeruserService } from 'src/plazeruser/plazeruser.service';
 import { Plazeruser } from 'src/plazeruser/entities/plazeruser.entity';
 import { Public } from 'src/utility/common/public.decorators';
-
+import { UpdatePlazeruserDto } from 'src/plazeruser/dto/update-plazeruser.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -52,6 +52,9 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('User not found after registration');
     }
-    return this.signIn({ userName: user.userName, userpassword: user.userPassword });
+    return this.signIn({ userName: user.userName, userPassword: user.userPassword });
   }
-}
+
+  
+  }
+

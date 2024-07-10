@@ -18,8 +18,7 @@ export class CreatePlazeruserDto {
   @IsNotEmpty({ message: 'Username cannot be empty' })
   userName: string;
 
-  @IsString()
-  userPassword: string;
+
 
   @IsString()
   userFName: string;
@@ -48,7 +47,7 @@ export class CreatePlazeruserDto {
   skills: string;
 
   @IsDateString()
-  DoB: string;
+  DoB: Date;
 
   @IsString()
   phone: string;
