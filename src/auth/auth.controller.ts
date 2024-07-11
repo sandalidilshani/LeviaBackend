@@ -45,7 +45,7 @@ export class AuthController {
 
 
   @Get('callback')
-  async handleCallback(@Query('token') token: string) {
+  async handleCallback(@Query('token') token: string):Promise<any> {
     console.log('token', token);
     try {
       const decoded = this.jwtService.verify(token, {
@@ -59,9 +59,9 @@ export class AuthController {
         ...rest,
       };
       // Save or update user data in mini app's database
-      await this.plazerservise.findOrCreateUser(decoded);
+      const newuser= await this.plazerservise.findOrCreateUser(decoded);
 
-      return { message: 'User authenticated and data saved' };
+      return newuser.userId;
     } catch (err) {
       console.log(err);
     }
