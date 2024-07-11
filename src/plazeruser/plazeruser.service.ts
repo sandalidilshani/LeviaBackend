@@ -149,7 +149,7 @@ export class PlazeruserService {
   }
 
   async findorcreateUser(userPayload: Partial<Plazeruser>): Promise<Plazeruser> {
-    let user = await this.plazeuserRepositary.findOne({ where: { userId: userPayload.userId } })
+    let user = await this.plazeuserRepositary.findOne({ where: { userName: userPayload.userName } })
     console.log(user)
     if (!user) {
       const createPlazeruserDto: CreatePlazeruserDto = {
