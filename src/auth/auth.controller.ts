@@ -59,7 +59,7 @@ export class AuthController {
         ...rest,
       };
       // Save or update user data in mini app's database
-      await this.plazerservise.findorcreateUser(decoded);
+      await this.plazerservise.findOrCreateUser(decoded);
 
       return { message: 'User authenticated and data saved' };
     } catch (err) {

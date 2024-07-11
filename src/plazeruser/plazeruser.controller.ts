@@ -27,7 +27,6 @@ export class PlazeruserController {
   
 
 
-  @Role('HRManager')
   @Get()
   findAll() {
     return this.plazeruserService.findAll();

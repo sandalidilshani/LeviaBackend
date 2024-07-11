@@ -43,7 +43,7 @@ export class Plazeruser {
   @Column({
     type: 'enum',
     enum: ['male', 'female', 'unspecified'],
-    nullable: false,
+    nullable: true,
   })
   gender: string;
 
@@ -66,7 +66,7 @@ export class Plazeruser {
   @Column({ nullable: true })
   image: string;
 
-  @Column()
+  @Column({nullable:true})
   gitlink: string;
 
   @Column({ nullable: true })

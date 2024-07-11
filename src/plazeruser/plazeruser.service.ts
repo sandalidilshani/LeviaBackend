@@ -148,48 +148,55 @@ console.log('update',user)
     return updatedUser;
   }
 
-  async findorcreateUser(userPayload): Promise<Plazeruser> {
-    console.log(userPayload.username)
-    let user = await this.plazeuserRepositary.findOne({ where: { userName: userPayload.username } })
-    if (!user) {
-      const createPlazeruserDto: CreatePlazeruserDto = {
-        userName: userPayload.userName,
-        userFName: userPayload.userFName,
-        userLName: userPayload.userLName,
-        AddressL1: userPayload.AddressL1,
-        AddressL2: userPayload.AddressL2,
-        AddressL3: userPayload.AddressL3,
-        Email: userPayload.Email,
-        gender: userPayload.gender,
-        skills: userPayload.skills,
-        DoB: new Date(userPayload.DoB),
-        phone: userPayload.phone,
-        role: userPayload.role,
-        image: userPayload.image,
-        gitlink: userPayload.gitlink,
-      };
-      const user = this.plazeuserRepositary.create(createPlazeruserDto)
-    }
-    else {
-      console.log('updateneed')
-      user.userFName = userPayload.userFName;
-      user.userLName = userPayload.userLName;
-      user.AddressL1 = userPayload.AddressL1;
-      user.AddressL2 = userPayload.AddressL2;
-      user.AddressL3 = userPayload.AddressL3;
-      user.Email = userPayload.Email;
-      user.gender = userPayload.gender;
-      user.skills = userPayload.skills;
-      user.DoB = userPayload.DoB;
-      user.phone = userPayload.phone;
-      user.role = userPayload.role;
-      user.image = userPayload.image;
-      user.gitlink = userPayload.gitlink;
-      await this.plazeuserRepositary.update(user.userId, user);
+  async findOrCreateUser(userPayload: any): Promise<Plazeruser> {
+    console.log(userPayload.username);
+    //plazeuserRepositary.findOne({ where: { userId } })
+    const existingUser = await this.plazeuserRepositary.findOne({ where: { userName: userPayload.username } });
+    console.log('userfound', existingUser);
 
-    }
-    return user;
+    if (!existingUser) {
+      console.log('time to add new user')
+        const CreateplazeruserDto: CreatePlazeruserDto = {
+            userName: userPayload.username,
+            userFName: userPayload.fristname,
+            userLName: userPayload.lastname,
+            AddressL1: userPayload.addressL1,
+            AddressL2: userPayload.addressL2,
+            AddressL3: userPayload.addressL3,
+            Email: userPayload.email,
+            gender: userPayload.gender,
+            skills: userPayload.skills,
+            DoB: new Date(userPayload.DoB),
+            phone: userPayload.phone,
+            role: userPayload.roles[0],
+            image: userPayload.image,
+            gitlink: userPayload.gitlink,
+        };
 
-  }
+        const newUser = this.plazeuserRepositary.create(CreateplazeruserDto);
+        await this.plazeuserRepositary.save(newUser);
+        return newUser;
+    } else {
+        console.log('updateneed');
+
+        existingUser.userFName = userPayload.fristname;
+        existingUser.userLName = userPayload.lastname;
+        existingUser.AddressL1 = userPayload.addressL1;
+        existingUser.AddressL2 = userPayload.addressL2;
+        existingUser.AddressL3 = userPayload.addressL3;
+        existingUser.Email = userPayload.email;
+        existingUser.gender = userPayload.gender;
+        existingUser.skills = userPayload.skills;
+        existingUser.DoB = new Date(userPayload.DoB);
+        existingUser.phone = userPayload.phone;
+        existingUser.role = userPayload.roles[0];
+        existingUser.image = userPayload.image;
+        existingUser.gitlink = userPayload.gitlink;
+
+        await this.plazeuserRepositary.save(existingUser);
+        return existingUser;
+    }
+}
+
 
 }
