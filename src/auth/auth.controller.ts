@@ -42,13 +42,7 @@ export class AuthController {
     return this.authservice.register(createnewuser);
   }
 
-  @Put('/update/:userId')
-  async update(
-    @Param('userId') userId: number,
-    @Body() updatePlazeruserDto: UpdatePlazeruserDto,
-  ): Promise<any> {
-    return this.plazerservise.update(updatePlazeruserDto, userId);
-  }
+
 
   @Get('callback')
   async handleCallback(@Query('token') token: string) {
@@ -64,7 +58,6 @@ export class AuthController {
         username,
         ...rest,
       };
-
       // Save or update user data in mini app's database
       await this.plazerservise.findorcreateUser(decoded);
 

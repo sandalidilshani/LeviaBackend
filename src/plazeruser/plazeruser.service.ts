@@ -127,30 +127,30 @@ export class PlazeruserService {
     }
   }
 
-  async update(updatePlazeruserDto: UpdatePlazeruserDto, userId: number): Promise<any> {
+  async update(userId: number,updatePlazeruserDto: UpdatePlazeruserDto, ): Promise<any> {
+    console.log('this is update func')
     const user = await this.plazeuserRepositary.findOne({
       where: { userId: userId },
     });
 
-
+console.log('update',user)
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found`);
     }
     console.log(user)
     console.log(updatePlazeruserDto)
     // Merging the new data with the existing user data
-    const updatedUser = this.plazeuserRepositary.merge(user, updatePlazeruserDto);
+    const updatedUser = this.plazeuserRepositary.update(user.userId, updatePlazeruserDto);
 
     // Saving the updated user
-    await this.plazeuserRepositary.save(updatedUser);
 
 
     return updatedUser;
   }
 
-  async findorcreateUser(userPayload: Partial<Plazeruser>): Promise<Plazeruser> {
-    let user = await this.plazeuserRepositary.findOne({ where: { userName: userPayload.userName } })
-    console.log(user)
+  async findorcreateUser(userPayload): Promise<Plazeruser> {
+    console.log(userPayload.username)
+    let user = await this.plazeuserRepositary.findOne({ where: { userName: userPayload.username } })
     if (!user) {
       const createPlazeruserDto: CreatePlazeruserDto = {
         userName: userPayload.userName,
@@ -171,8 +171,7 @@ export class PlazeruserService {
       const user = this.plazeuserRepositary.create(createPlazeruserDto)
     }
     else {
-      user.userName = userPayload.userName;
-      user.userPassword = userPayload.userPassword;
+      console.log('updateneed')
       user.userFName = userPayload.userFName;
       user.userLName = userPayload.userLName;
       user.AddressL1 = userPayload.AddressL1;
