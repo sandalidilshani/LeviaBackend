@@ -52,8 +52,8 @@ export class AuthService {
       gitLink: user.gitlink,
       phone: user.phone,
     };
-    const access_token = this.jwtservice.sign(payload);
-    return { accesstoken: access_token };
+    const access_token = await this.jwtservice.signAsync(payload);
+    return { token: access_token };
   }
 
   async register(CreateuserDto: createuserdto): Promise<any> {
