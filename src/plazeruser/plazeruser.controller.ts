@@ -7,16 +7,16 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  
+
   Req,
-  
+
 } from '@nestjs/common';
 import { PlazeruserService } from './plazeruser.service';
 import { CreatePlazeruserDto } from './dto/create-plazeruser.dto';
 import { Role } from 'src/utility/guard/role.decorator';
 @Controller('plazeruser')
 export class PlazeruserController {
-  constructor(private readonly plazeruserService: PlazeruserService) {}
+  constructor(private readonly plazeruserService: PlazeruserService) { }
 
   @Post()
   create(@Body() createPlazeruserDto: CreatePlazeruserDto) {
@@ -24,14 +24,14 @@ export class PlazeruserController {
   }
 
 
-  
+
 
 
   @Get()
   findAll() {
     return this.plazeruserService.findAll();
   }
-  
+
   @Get('/roles/:userId')
   async getuserroles(@Param('userId') userId: number) {
     console.log(userId);
@@ -62,27 +62,30 @@ export class PlazeruserController {
   }
 
 
-@Role('HRManager','User')
+  @Role('HRManager', 'User')
   @Get('/userdetailsbyuserid/:userId')
- async findUserOne(@Param('userId') userId: number) {
-   console.log(userId)
+  async findUserOne(@Param('userId') userId: number) {
+    console.log(userId)
     return this.plazeruserService.findOneByUserId(userId);
   }
   //get users count
   @Role('HRManager')
   @Get('/usercount')
-  usercount(){
+  usercount() {
     return this.plazeruserService.usercount()
   }
 
   //get user details and leave details by leave id 
   @Get('/getleavedetails/:leaveId')
-  async getUserDetailsByLeaveId(@Param('leaveId',ParseIntPipe)leaveId:number){
+  async getUserDetailsByLeaveId(@Param('leaveId', ParseIntPipe) leaveId: number) {
     console.log(leaveId)
     return this.plazeruserService.getUserDetailsByLeaveId(leaveId)
 
   }
 
-  
-  
+  @Get('/userswithoutleves')
+  async findPlazerusersWithoutUserLeave() {
+    return this.plazeruserService.findPlazerusersWithoutUserLeave()
+  }
+
 }

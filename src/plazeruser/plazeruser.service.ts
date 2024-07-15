@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Plazeruser } from './entities/plazeruser.entity';
 import { Repository } from 'typeorm';
 import { log } from 'console';
+import { UserLeave } from 'src/userleave/entities/userleave.entity';
 @Injectable()
 export class PlazeruserService {
   constructor(
@@ -197,6 +198,13 @@ console.log('update',user)
         return existingUser;
     }
 }
-
-
+ async findPlazerusersWithoutUserLeave():Promise<Plazeruser[]>{
+  return await this.plazeuserRepositary
+      .createQueryBuilder('plazeruser')
+      .leftJoin(UserLeave, 'userLeave', 'userLeave.plazeruser = plazeruser.userId')
+      .where('userLeave.userLeaveId IS NULL')
+      .getMany();
+ }
 }
+
+

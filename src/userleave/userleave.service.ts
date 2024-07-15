@@ -11,7 +11,9 @@ import { Plazeruser } from 'src/plazeruser/entities/plazeruser.entity';
 export class UserleaveService {
   constructor(
     @InjectRepository(UserLeave)
+
     private userLeaverepo: Repository<UserLeave>,
+
     private plazeruserservice: PlazeruserService,
   ) {}
 
@@ -98,8 +100,18 @@ export class UserleaveService {
   }
 
   
-  findAll() {
-    return `This action returns all userleave`;
+  async findAll(): Promise<UserLeave[]> {
+    try {
+      const userLeaves = await this.userLeaverepo.find({
+        relations: ['plazeruser'], 
+      });
+      console.log('Fetched userLeaves:', userLeaves);
+
+      return userLeaves;
+    } catch (error) {
+      console.error('Error fetching user leaves:', error);
+      throw new Error('Could not fetch user leaves');
+    }
   }
 
   findOne(id: number) {
